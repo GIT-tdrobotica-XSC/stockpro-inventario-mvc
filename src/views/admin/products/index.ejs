@@ -56,6 +56,8 @@
   <div class="modal-footer border-0"><button class="btn btn-brand">Registrar</button></div>
 </form></div></div>
 <% const pageScripts = `<script>
+// El modal debe colgar de <body> para quedar por encima del fondo oscuro
+document.body.appendChild(document.getElementById('stockModal'));
 document.getElementById('stockModal').addEventListener('show.bs.modal', e => {
   const b = e.relatedTarget;
   document.getElementById('stockName').textContent = b.dataset.name;
