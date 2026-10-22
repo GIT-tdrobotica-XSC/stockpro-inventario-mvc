@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+<div class="page-head"><div><h1>Categorías</h1><p>Organiza tus productos</p></div></div>
+<div class="row g-4">
+  <div class="col-lg-4"><div class="card p-4">
+    <h5 class="fw-bold mb-3"><%= edit ? 'Editar categoría' : 'Nueva categoría' %></h5>
+    <form method="post" action="<%= edit ? '/admin/categories/' + edit.id : '/admin/categories' %>">
+      <div class="mb-3"><label class="form-label">Nombre</label><input name="name" class="form-control" value="<%= edit ? edit.name : '' %>" required></div>
+      <div class="mb-3"><label class="form-label">Ícono</label>
+        <select name="icon" class="form-select">
+          <% [['bi-laptop','Portátil'],['bi-mouse','Mouse'],['bi-router','Redes'],['bi-cpu','Chip'],['bi-printer','Impresora'],['bi-phone','Móvil'],['bi-headphones','Audio'],['bi-tools','Herramientas'],['bi-box-seam','Caja']].forEach(([v, l]) => { %>
+            <option value="<%= v %>" <%= edit && edit.icon === v ? 'selected' : '' %>><%= l %></option>
+          <% }) %>
+        </select></div>
+      <div class="mb-3"><label class="form-label">Color</label><input type="color" name="color" class="form-control form-control-color w-100" value="<%= edit ? edit.color : '#6366f1' %>"></div>
+      <button class="btn btn-brand w-100"><%= edit ? 'Actualizar' : 'Crear' %></button>
+      <% if (edit) { %><a href="/admin/categories" class="btn btn-link w-100">Cancelar</a><% } %>
+    </form>
+  </div></div>
+  <div class="col-lg-8"><div class="card"><div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>Categoría</th><th>Productos</th><th class="text-end">Acciones</th></tr></thead>
+      <tbody>
+        <% categories.forEach(c => { %>
+        <tr>
+          <td><span class="pill" style="background:<%= c.color %>22;color:<%= c.color %>"><i class="bi <%= c.icon %>"></i> <%= c.name %></span></td>
+          <td><%= c.products %></td>
+          <td class="text-end text-nowrap">
+            <a href="?edit=<%= c.id %>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+            <form method="post" action="/admin/categories/<%= c.id %>/delete" class="d-inline" onsubmit="return confirm('¿Eliminar la categoría? Sus productos quedarán sin categoría.')">
+              <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table></div></div></div>
+</div>
+<%- include('../partials/footer') %>

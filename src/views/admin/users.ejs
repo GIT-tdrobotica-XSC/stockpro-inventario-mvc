@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+<div class="page-head"><div><h1>Usuarios</h1><p><%= users.length %> cuenta(s) registradas</p></div></div>
+<div class="card"><div class="table-responsive">
+<table class="table table-hover mb-0">
+  <thead><tr><th>Usuario</th><th>Rol</th><th>Movimientos</th><th>Registro</th><th class="text-end">Acciones</th></tr></thead>
+  <tbody>
+    <% users.forEach(u => { const me = u.id === currentUser.id; %>
+    <tr>
+      <td><div class="d-flex align-items-center gap-2"><div class="avatar"><%= u.name[0].toUpperCase() %></div>
+        <div class="lh-sm"><strong><%= u.name %></strong> <%= me ? '(tú)' : '' %><br><small class="text-secondary"><%= u.email %></small></div></div></td>
+      <td><span class="pill <%= u.role === 'admin' ? 'pill-low' : 'pill-ok' %>"><%= u.role === 'admin' ? 'Admin' : 'Usuario' %></span></td>
+      <td><%= u.movements %></td>
+      <td class="text-secondary"><%= u.created_at %></td>
+      <td class="text-end text-nowrap">
+        <% if (!me) { %>
+        <form method="post" action="/admin/users/<%= u.id %>/role" class="d-inline">
+          <input type="hidden" name="role" value="<%= u.role === 'admin' ? 'user' : 'admin' %>">
+          <button class="btn btn-sm btn-outline-primary"><%= u.role === 'admin' ? 'Quitar admin' : 'Hacer admin' %></button></form>
+        <form method="post" action="/admin/users/<%= u.id %>/delete" class="d-inline" onsubmit="return confirm('¿Eliminar este usuario?')">
+          <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+        <% } %>
+      </td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table></div></div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,33 @@
+<%- include('../partials/header', { bare: true }) %>
+<div class="auth-wrap">
+  <section class="auth-hero">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <span class="brand-logo" style="width:54px;height:54px;font-size:1.7rem"><i class="bi bi-boxes"></i></span>
+      <span class="fs-3 fw-bold">StockPro</span>
+    </div>
+    <h1>Crea tu cuenta<br>en segundos.</h1>
+    <p class="fs-5 opacity-75">Explora el catálogo, consulta disponibilidad y retira productos con registro automático.</p>
+  </section>
+  <section class="auth-form">
+    <div class="box">
+      <h2 class="fw-bold mb-1">Crear cuenta</h2>
+      <p class="text-secondary mb-4">Los nuevos registros tienen rol de usuario.</p>
+      <% if (error) { %><div class="alert alert-danger py-2"><%= error %></div><% } %>
+      <form method="post" action="/register">
+        <div class="mb-3"><label class="form-label">Nombre</label>
+          <input name="name" class="form-control" value="<%= form.name || '' %>" required></div>
+        <div class="mb-3"><label class="form-label">Correo</label>
+          <input type="email" name="email" class="form-control" value="<%= form.email || '' %>" required></div>
+        <div class="row">
+          <div class="col mb-3"><label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" minlength="6" required></div>
+          <div class="col mb-3"><label class="form-label">Confirmar</label>
+            <input type="password" name="confirm" class="form-control" required></div>
+        </div>
+        <button class="btn btn-brand w-100 py-2">Registrarme</button>
+      </form>
+      <p class="text-center mt-3">¿Ya tienes cuenta? <a href="/login">Ingresar</a></p>
+    </div>
+  </section>
+</div>
+<%- include('../partials/footer', { bare: true }) %>

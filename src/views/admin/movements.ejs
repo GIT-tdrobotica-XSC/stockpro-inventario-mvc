@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<div class="page-head"><div><h1>Movimientos</h1><p>Últimos 200 registros</p></div>
+  <div class="btn-group">
+    <a href="/admin/movements" class="btn btn-outline-secondary <%= !type ? 'active' : '' %>">Todos</a>
+    <a href="?type=entrada" class="btn btn-outline-success <%= type === 'entrada' ? 'active' : '' %>">Entradas</a>
+    <a href="?type=salida" class="btn btn-outline-danger <%= type === 'salida' ? 'active' : '' %>">Salidas</a>
+  </div></div>
+<div class="card"><div class="table-responsive">
+<table class="table table-hover mb-0">
+  <thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Usuario</th><th>Nota</th></tr></thead>
+  <tbody>
+    <% movements.forEach(m => { %>
+    <tr>
+      <td class="text-nowrap"><%= m.created_at %></td>
+      <td><strong><%= m.product %></strong><br><small class="text-secondary"><%= m.sku %></small></td>
+      <td><span class="pill <%= m.type === 'entrada' ? 'pill-in' : 'pill-out' %>"><%= m.type %></span></td>
+      <td><%= m.quantity %></td><td><%= m.user || '—' %></td><td class="text-secondary"><%= m.note %></td>
+    </tr>
+    <% }) %>
+    <% if (!movements.length) { %><tr><td colspan="6" class="text-center text-secondary py-5">Sin movimientos.</td></tr><% } %>
+  </tbody>
+</table></div></div>
+<%- include('../partials/footer') %>

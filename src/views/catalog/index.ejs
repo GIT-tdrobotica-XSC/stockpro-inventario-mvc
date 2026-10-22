@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <div><h1>Catálogo</h1><p><%= total %> producto(s) disponibles</p></div>
+</div>
+
+<form class="card p-3 mb-4" method="get">
+  <div class="row g-2">
+    <div class="col-md-5"><div class="input-group">
+      <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+      <input class="form-control" name="q" value="<%= q %>" placeholder="Buscar por nombre, SKU o descripción">
+    </div></div>
+    <div class="col-md-3">
+      <select name="category" class="form-select" onchange="this.form.submit()">
+        <option value="">Todas las categorías</option>
+        <% categories.forEach(c => { %><option value="<%= c.id %>" <%= String(c.id) === String(category) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="sort" class="form-select" onchange="this.form.submit()">
+        <option value="name" <%= sort === 'name' ? 'selected' : '' %>>Nombre</option>
+        <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Precio ↑</option>
+        <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Precio ↓</option>
+        <option value="recent" <%= sort === 'recent' ? 'selected' : '' %>>Más recientes</option>
+      </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-brand w-100">Filtrar</button></div>
+  </div>
+</form>
+
+<% if (!rows.length) { %>
+  <div class="card p-5 text-center text-secondary"><i class="bi bi-inbox fs-1"></i><p class="mb-0 mt-2">No se encontraron productos.</p></div>
+<% } else { %>
+<div class="row g-4">
+  <% rows.forEach(p => { %>
+  <div class="col-sm-6 col-xl-4">
+    <a href="/catalog/<%= p.id %>" class="text-decoration-none text-reset">
+      <div class="card product-card">
+        <div class="product-thumb" style="background:linear-gradient(135deg, <%= p.color || '#94a3b8' %>, <%= p.color || '#94a3b8' %>aa)">
+          <i class="bi <%= p.icon || 'bi-box-seam' %>"></i>
+        </div>
+        <div class="card-body">
+          <small class="text-secondary"><span class="cat-dot" style="background:<%= p.color || '#94a3b8' %>"></span> <%= p.category || 'Sin categoría' %> · <%= p.sku %></small>
+          <h6 class="fw-bold mt-1 mb-1"><%= p.name %></h6>
+          <p class="text-secondary small mb-3" style="min-height:2.5em"><%= p.description %></p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="price"><%= money(p.price) %></span>
+            <% if (p.stock === 0) { %><span class="pill pill-zero">Agotado</span>
+            <% } else if (p.stock <= p.min_stock) { %><span class="pill pill-low">Quedan <%= p.stock %></span>
+            <% } else { %><span class="pill pill-ok"><%= p.stock %> disp.</span><% } %>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <% }) %>
+</div>
+<%- include('../partials/pagination') %>
+<% } %>
+<%- include('../partials/footer') %>

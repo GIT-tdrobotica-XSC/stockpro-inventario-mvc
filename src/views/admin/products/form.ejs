@@ -1,0 +1,24 @@
+<%- include('../../partials/header') %>
+<div class="page-head"><div><h1><%= editing ? 'Editar producto' : 'Nuevo producto' %></h1><p>Completa la información del producto</p></div>
+  <a href="/admin/products" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a></div>
+<div class="card p-4" style="max-width:820px">
+  <% if (error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+  <form method="post" action="<%= editing ? '/admin/products/' + product.id : '/admin/products' %>">
+    <div class="row g-3">
+      <div class="col-md-4"><label class="form-label">SKU *</label><input name="sku" class="form-control" value="<%= product.sku || '' %>" required></div>
+      <div class="col-md-8"><label class="form-label">Nombre *</label><input name="name" class="form-control" value="<%= product.name || '' %>" required></div>
+      <div class="col-12"><label class="form-label">Descripción</label><textarea name="description" rows="2" class="form-control"><%= product.description || '' %></textarea></div>
+      <div class="col-md-6"><label class="form-label">Categoría</label>
+        <select name="category_id" class="form-select"><option value="">Sin categoría</option>
+          <% categories.forEach(c => { %><option value="<%= c.id %>" <%= String(c.id) === String(product.category_id) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+        </select></div>
+      <div class="col-md-6"><label class="form-label">Precio (COP) *</label><input type="number" step="any" min="0" name="price" class="form-control" value="<%= product.price ?? '' %>" required></div>
+      <% if (!editing) { %>
+      <div class="col-md-6"><label class="form-label">Stock inicial</label><input type="number" min="0" name="stock" class="form-control" value="<%= product.stock ?? 0 %>"></div>
+      <% } %>
+      <div class="col-md-6"><label class="form-label">Stock mínimo (alerta)</label><input type="number" min="0" name="min_stock" class="form-control" value="<%= product.min_stock ?? 5 %>"></div>
+    </div>
+    <div class="mt-4"><button class="btn btn-brand px-4"><i class="bi bi-check-lg"></i> Guardar</button></div>
+  </form>
+</div>
+<%- include('../../partials/footer') %>

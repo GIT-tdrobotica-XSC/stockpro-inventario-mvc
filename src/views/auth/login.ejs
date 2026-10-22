@@ -1,0 +1,42 @@
+<%- include('../partials/header', { bare: true }) %>
+<div class="auth-wrap">
+  <section class="auth-hero">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <span class="brand-logo" style="width:54px;height:54px;font-size:1.7rem"><i class="bi bi-boxes"></i></span>
+      <span class="fs-3 fw-bold">StockPro</span>
+    </div>
+    <h1>Controla tu inventario<br>en tiempo real.</h1>
+    <p class="fs-5 opacity-75 mb-4">Sistema de gestión con roles de administrador y usuario, alertas de stock y trazabilidad completa.</p>
+    <ul class="list-unstyled fs-6">
+      <li><i class="bi bi-check-circle-fill text-success"></i> Dashboard con métricas y gráficas</li>
+      <li><i class="bi bi-check-circle-fill text-success"></i> CRUD de productos, categorías y usuarios</li>
+      <li><i class="bi bi-check-circle-fill text-success"></i> Historial de entradas y salidas</li>
+      <li><i class="bi bi-check-circle-fill text-success"></i> Arquitectura MVC con Node.js</li>
+    </ul>
+  </section>
+  <section class="auth-form">
+    <div class="box">
+      <h2 class="fw-bold mb-1">Bienvenido</h2>
+      <p class="text-secondary mb-4">Ingresa con tu cuenta para continuar.</p>
+      <% if (error) { %><div class="alert alert-danger py-2"><%= error %></div><% } %>
+      <form method="post" action="/login">
+        <div class="mb-3">
+          <label class="form-label">Correo</label>
+          <input type="email" name="email" class="form-control" value="<%= email %>" required autofocus>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Contraseña</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+        <button class="btn btn-brand w-100 py-2">Ingresar</button>
+      </form>
+      <p class="text-center mt-3 mb-4">¿No tienes cuenta? <a href="/register">Regístrate</a></p>
+      <div class="p-3 rounded-3 bg-light small">
+        <strong>Cuentas de prueba</strong><br>
+        <i class="bi bi-shield-lock"></i> Admin: <code>admin@stockpro.com</code> / <code>admin123</code><br>
+        <i class="bi bi-person"></i> Usuario: <code>user@stockpro.com</code> / <code>user123</code>
+      </div>
+    </div>
+  </section>
+</div>
+<%- include('../partials/footer', { bare: true }) %>

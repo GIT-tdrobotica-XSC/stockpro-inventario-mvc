@@ -1,0 +1,87 @@
+:root {
+  --brand: #6366f1;
+  --brand-2: #8b5cf6;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --radius: 16px;
+}
+body { background: var(--bg); color: var(--ink); font-family: 'Segoe UI', system-ui, sans-serif; }
+
+/* ---------- Layout ---------- */
+.sidebar {
+  position: fixed; inset: 0 auto 0 0; width: 250px; padding: 1.25rem 1rem;
+  background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); color: #cbd5e1;
+  display: flex; flex-direction: column; z-index: 100; transition: transform .25s;
+}
+.sidebar .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.25rem; color: #fff; padding: .25rem .5rem 1.25rem; text-decoration: none; }
+.brand-logo { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; font-size: 1.2rem; }
+.sidebar .nav-link { color: #cbd5e1; border-radius: 10px; padding: .6rem .8rem; display: flex; align-items: center; gap: .7rem; margin-bottom: 2px; }
+.sidebar .nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+.sidebar .nav-link.active { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; box-shadow: 0 6px 16px rgba(99,102,241,.35); }
+.sidebar .section { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #64748b; margin: 1rem .8rem .4rem; }
+.sidebar .me { margin-top: auto; padding: .8rem; background: rgba(255,255,255,.06); border-radius: 12px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; font-weight: 700; }
+.main { margin-left: 250px; padding: 1.75rem 2rem 3rem; min-height: 100vh; }
+.topbar-mobile { display: none; }
+@media (max-width: 991px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: none; }
+  .main { margin-left: 0; padding: 1rem; }
+  .topbar-mobile { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+}
+
+/* ---------- Componentes ---------- */
+.page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.page-head h1 { font-size: 1.6rem; font-weight: 700; margin: 0; }
+.page-head p { color: var(--muted); margin: 0; }
+.card { border: 0; border-radius: var(--radius); box-shadow: 0 1px 3px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.04); }
+.card-header { background: transparent; border: 0; font-weight: 600; padding: 1.1rem 1.25rem .25rem; }
+.btn { border-radius: 10px; font-weight: 500; }
+.btn-brand { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; border: 0; box-shadow: 0 6px 14px rgba(99,102,241,.3); }
+.btn-brand:hover { color: #fff; filter: brightness(1.08); transform: translateY(-1px); }
+.form-control, .form-select { border-radius: 10px; padding: .6rem .85rem; border-color: #e2e8f0; }
+.form-control:focus, .form-select:focus { border-color: var(--brand); box-shadow: 0 0 0 .2rem rgba(99,102,241,.15); }
+
+.stat { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; }
+.stat .ico { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 1.5rem; color: #fff; }
+.stat .num { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+.stat .lbl { color: var(--muted); font-size: .85rem; }
+.g1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.g2 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+.g3 { background: linear-gradient(135deg, #10b981, #34d399); }
+.g4 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+
+.table > :not(caption) > * > * { padding: .85rem 1rem; vertical-align: middle; }
+.table thead th { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); border-bottom-width: 1px; background: #f8fafc; }
+.table-hover tbody tr:hover { background: #f8fafc; }
+.pill { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .65rem; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+.pill-in { background: #dcfce7; color: #166534; }
+.pill-out { background: #fee2e2; color: #991b1b; }
+.pill-ok { background: #dcfce7; color: #166534; }
+.pill-low { background: #fef3c7; color: #92400e; }
+.pill-zero { background: #fee2e2; color: #991b1b; }
+
+/* Tarjetas de producto */
+.product-card { transition: transform .2s, box-shadow .2s; height: 100%; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(15,23,42,.12); }
+.product-thumb { height: 130px; border-radius: var(--radius) var(--radius) 0 0; display: grid; place-items: center; font-size: 3.2rem; color: #fff; }
+.price { font-weight: 700; font-size: 1.15rem; }
+.cat-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* ---------- Auth ---------- */
+.auth-wrap { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 1fr; }
+.auth-hero { background: linear-gradient(135deg, #0f172a, #312e81 60%, #6d28d9); color: #fff; padding: 3rem; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+.auth-hero::after { content: ''; position: absolute; width: 420px; height: 420px; border-radius: 50%; background: rgba(255,255,255,.06); right: -120px; bottom: -120px; }
+.auth-hero h1 { font-size: 2.6rem; font-weight: 800; }
+.auth-hero li { margin-bottom: .6rem; display: flex; gap: .6rem; align-items: center; }
+.auth-form { display: grid; place-items: center; padding: 2rem; background: #fff; }
+.auth-form .box { width: 100%; max-width: 400px; }
+@media (max-width: 860px) { .auth-wrap { grid-template-columns: 1fr; } .auth-hero { display: none; } }
+
+.error-page { min-height: 70vh; display: grid; place-items: center; text-align: center; }
+.error-page .code { font-size: 6rem; font-weight: 800; background: linear-gradient(135deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.fade-in { animation: fade .35s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

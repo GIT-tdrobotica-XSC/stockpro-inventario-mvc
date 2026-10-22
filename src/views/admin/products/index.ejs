@@ -1,0 +1,65 @@
+<%- include('../../partials/header') %>
+<div class="page-head">
+  <div><h1>Productos</h1><p><%= total %> registro(s)</p></div>
+  <a href="/admin/products/new" class="btn btn-brand"><i class="bi bi-plus-lg"></i> Nuevo producto</a>
+</div>
+
+<form class="card p-3 mb-4" method="get">
+  <div class="row g-2">
+    <div class="col-md-5"><input class="form-control" name="q" value="<%= q %>" placeholder="Buscar por nombre, SKU o descripción"></div>
+    <div class="col-md-3"><select name="category" class="form-select" onchange="this.form.submit()">
+      <option value="">Todas las categorías</option>
+      <% categories.forEach(c => { %><option value="<%= c.id %>" <%= String(c.id) === String(category) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+    </select></div>
+    <div class="col-md-2"><select name="sort" class="form-select" onchange="this.form.submit()">
+      <option value="recent" <%= sort === 'recent' ? 'selected' : '' %>>Recientes</option>
+      <option value="name" <%= sort === 'name' ? 'selected' : '' %>>Nombre</option>
+      <option value="stock" <%= sort === 'stock' ? 'selected' : '' %>>Menor stock</option>
+      <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Mayor precio</option>
+    </select></div>
+    <div class="col-md-2"><button class="btn btn-brand w-100">Buscar</button></div>
+  </div>
+</form>
+
+<div class="card"><div class="table-responsive">
+<table class="table table-hover mb-0">
+  <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th class="text-end">Acciones</th></tr></thead>
+  <tbody>
+    <% rows.forEach(p => { %>
+    <tr>
+      <td><strong><%= p.name %></strong><br><small class="text-secondary"><%= p.sku %></small></td>
+      <td><% if (p.category) { %><span class="pill" style="background:<%= p.color %>22;color:<%= p.color %>"><i class="bi <%= p.icon %>"></i> <%= p.category %></span><% } else { %>—<% } %></td>
+      <td><%= money(p.price) %></td>
+      <td><span class="pill <%= p.stock === 0 ? 'pill-zero' : p.stock <= p.min_stock ? 'pill-low' : 'pill-ok' %>"><%= p.stock %></span></td>
+      <td class="text-end text-nowrap">
+        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#stockModal" data-id="<%= p.id %>" data-name="<%= p.name %>" title="Ajustar stock"><i class="bi bi-arrow-left-right"></i></button>
+        <a href="/admin/products/<%= p.id %>/edit" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+        <form method="post" action="/admin/products/<%= p.id %>/delete" class="d-inline" onsubmit="return confirm('¿Eliminar «<%= p.name.replace(/'/g, '') %>»? Esta acción no se puede deshacer.')">
+          <button class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+    <% if (!rows.length) { %><tr><td colspan="5" class="text-center text-secondary py-5">Sin resultados.</td></tr><% } %>
+  </tbody>
+</table></div></div>
+<%- include('../../partials/pagination') %>
+
+<div class="modal fade" id="stockModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><form class="modal-content" method="post" id="stockForm" style="border-radius:16px">
+  <input type="hidden" name="back" value="/admin/products">
+  <div class="modal-header border-0"><h5 class="modal-title">Ajustar stock · <span id="stockName"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="mb-3"><label class="form-label">Tipo</label><select name="type" class="form-select"><option value="entrada">Entrada (+)</option><option value="salida">Salida (−)</option></select></div>
+    <div class="mb-3"><label class="form-label">Cantidad</label><input type="number" name="quantity" min="1" value="1" class="form-control" required></div>
+    <div><label class="form-label">Nota</label><input name="note" class="form-control" maxlength="120"></div>
+  </div>
+  <div class="modal-footer border-0"><button class="btn btn-brand">Registrar</button></div>
+</form></div></div>
+<% const pageScripts = `<script>
+document.getElementById('stockModal').addEventListener('show.bs.modal', e => {
+  const b = e.relatedTarget;
+  document.getElementById('stockName').textContent = b.dataset.name;
+  document.getElementById('stockForm').action = '/admin/products/' + b.dataset.id + '/stock';
+});
+</script>`; %>
+<%- include('../../partials/footer', { scripts: pageScripts }) %>

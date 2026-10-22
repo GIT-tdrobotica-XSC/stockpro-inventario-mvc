@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+<div class="page-head">
+  <div><h1>Dashboard</h1><p>Resumen general del inventario</p></div>
+  <a href="/admin/products/new" class="btn btn-brand"><i class="bi bi-plus-lg"></i> Nuevo producto</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <% [
+    ['g1','bi-box-seam', stats.products, 'Productos'],
+    ['g2','bi-stack', stats.units, 'Unidades en stock'],
+    ['g3','bi-currency-dollar', money(stats.value), 'Valor del inventario'],
+    ['g4','bi-exclamation-triangle', stats.low, 'Con stock bajo'],
+  ].forEach(([g, ico, num, lbl]) => { %>
+  <div class="col-sm-6 col-xl-3"><div class="card stat">
+    <div class="ico <%= g %>"><i class="bi <%= ico %>"></i></div>
+    <div><div class="num"><%= num %></div><div class="lbl"><%= lbl %></div></div>
+  </div></div>
+  <% }) %>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-8"><div class="card h-100"><div class="card-header">Movimientos de los últimos 7 días</div>
+    <div class="card-body"><canvas id="weekChart" height="110"></canvas></div></div></div>
+  <div class="col-lg-4"><div class="card h-100"><div class="card-header">Stock por categoría</div>
+    <div class="card-body d-flex align-items-center"><canvas id="catChart"></canvas></div></div></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6"><div class="card h-100"><div class="card-header">⚠️ Alertas de stock bajo</div>
+    <div class="table-responsive"><table class="table table-hover mb-0">
+      <tbody>
+        <% low.forEach(p => { %>
+        <tr>
+          <td><strong><%= p.name %></strong><br><small class="text-secondary"><%= p.sku %></small></td>
+          <td><span class="pill <%= p.stock === 0 ? 'pill-zero' : 'pill-low' %>"><%= p.stock %> / mín. <%= p.min_stock %></span></td>
+          <td class="text-end">
+            <form method="post" action="/admin/products/<%= p.id %>/stock" class="d-inline-flex gap-1">
+              <input type="hidden" name="type" value="entrada"><input type="hidden" name="back" value="/admin">
+              <input type="hidden" name="note" value="Reposición desde alerta">
+              <input type="number" name="quantity" value="10" min="1" class="form-control form-control-sm" style="width:70px">
+              <button class="btn btn-sm btn-brand" title="Reponer"><i class="bi bi-plus-lg"></i></button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+        <% if (!low.length) { %><tr><td class="text-center text-secondary py-4">Todo el stock está en niveles óptimos 🎉</td></tr><% } %>
+      </tbody></table></div></div></div>
+  <div class="col-lg-6"><div class="card h-100"><div class="card-header">Actividad reciente</div>
+    <div class="table-responsive"><table class="table table-hover mb-0">
+      <tbody>
+        <% recent.forEach(m => { %>
+        <tr>
+          <td><strong><%= m.product %></strong><br><small class="text-secondary"><%= m.user || '—' %> · <%= m.created_at %></small></td>
+          <td class="text-end"><span class="pill <%= m.type === 'entrada' ? 'pill-in' : 'pill-out' %>"><%= m.type === 'entrada' ? '+' : '−' %><%= m.quantity %></span></td>
+        </tr>
+        <% }) %>
+      </tbody></table></div></div></div>
+</div>
+
+<%
+  const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return d.toLocaleDateString('en-CA'); });
+  const byDay = Object.fromEntries(week.map(w => [w.day, w]));
+  const chartData = {
+    labels: days.map(d => d.slice(5)),
+    entradas: days.map(d => (byDay[d] || {}).entradas || 0),
+    salidas: days.map(d => (byDay[d] || {}).salidas || 0),
+    cats: byCategory,
+  };
+  const pageScripts = `
+<script src="/vendor/chart/chart.umd.js"></script>
+<script>
+  const D = ${JSON.stringify(chartData)};
+  new Chart(document.getElementById('weekChart'), {
+    type: 'bar',
+    data: { labels: D.labels, datasets: [
+      { label: 'Entradas', data: D.entradas, backgroundColor: '#10b981', borderRadius: 6 },
+      { label: 'Salidas', data: D.salidas, backgroundColor: '#f43f5e', borderRadius: 6 } ] },
+    options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } } }
+  });
+  new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: { labels: D.cats.map(c => c.name), datasets: [{ data: D.cats.map(c => c.units), backgroundColor: D.cats.map(c => c.color), borderWidth: 0 }] },
+    options: { cutout: '65%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>`;
+%>
+<%- include('../partials/footer', { scripts: pageScripts }) %>

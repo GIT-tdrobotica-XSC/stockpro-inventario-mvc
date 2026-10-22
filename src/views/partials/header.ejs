@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · StockPro</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<% if (currentUser && !locals.bare) {
+  const isAdmin = currentUser.role === 'admin';
+  const link = (href, icon, label, exact) => {
+    const active = exact ? path === href : path.startsWith(href);
+    return `<a class="nav-link ${active ? 'active' : ''}" href="${href}"><i class="bi ${icon}"></i>${label}</a>`;
+  };
+%>
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="/"><span class="brand-logo"><i class="bi bi-boxes"></i></span>StockPro</a>
+  <nav class="nav flex-column">
+    <% if (isAdmin) { %>
+      <div class="section">Administración</div>
+      <%- link('/admin', 'bi-speedometer2', 'Dashboard', true) %>
+      <%- link('/admin/products', 'bi-box-seam', 'Productos') %>
+      <%- link('/admin/categories', 'bi-tags', 'Categorías') %>
+      <%- link('/admin/movements', 'bi-arrow-left-right', 'Movimientos') %>
+      <%- link('/admin/users', 'bi-people', 'Usuarios') %>
+    <% } %>
+    <div class="section"><%= isAdmin ? 'Vista de usuario' : 'Menú' %></div>
+    <%- link('/catalog', 'bi-grid', 'Catálogo') %>
+    <%- link('/my-movements', 'bi-receipt', 'Mis movimientos') %>
+  </nav>
+  <div class="me">
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <div class="avatar"><%= currentUser.name[0].toUpperCase() %></div>
+      <div class="lh-sm overflow-hidden">
+        <div class="text-white fw-semibold text-truncate"><%= currentUser.name %></div>
+        <small class="text-secondary"><%= isAdmin ? 'Administrador' : 'Usuario' %></small>
+      </div>
+    </div>
+    <form method="post" action="/logout"><button class="btn btn-sm btn-outline-light w-100"><i class="bi bi-box-arrow-right"></i> Salir</button></form>
+  </div>
+</aside>
+<main class="main fade-in">
+  <div class="topbar-mobile">
+    <button class="btn btn-light" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list fs-5"></i></button>
+    <strong>StockPro</strong>
+  </div>
+<% } %>
+<% if (flash) { %>
+  <div class="alert alert-<%= flash.type %> alert-dismissible fade show shadow-sm" role="alert" style="border-radius:12px;<%= locals.bare ? 'position:fixed;top:1rem;right:1rem;z-index:999' : '' %>">
+    <%= flash.text %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>

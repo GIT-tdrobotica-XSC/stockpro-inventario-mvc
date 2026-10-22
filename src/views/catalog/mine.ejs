@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<div class="page-head"><div><h1>Mis movimientos</h1><p>Historial de tus retiros</p></div>
+  <a href="/catalog" class="btn btn-brand"><i class="bi bi-grid"></i> Ir al catálogo</a></div>
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Nota</th></tr></thead>
+      <tbody>
+        <% movements.forEach(m => { %>
+        <tr>
+          <td class="text-nowrap"><%= m.created_at %></td>
+          <td><strong><%= m.product %></strong><br><small class="text-secondary"><%= m.sku %></small></td>
+          <td><span class="pill <%= m.type === 'entrada' ? 'pill-in' : 'pill-out' %>"><%= m.type %></span></td>
+          <td><%= m.quantity %></td>
+          <td class="text-secondary"><%= m.note %></td>
+        </tr>
+        <% }) %>
+        <% if (!movements.length) { %><tr><td colspan="5" class="text-center text-secondary py-5">Aún no has realizado movimientos.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%- include('../partials/footer') %>

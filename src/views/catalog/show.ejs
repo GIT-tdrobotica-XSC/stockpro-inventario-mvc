@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+<a href="/catalog" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Volver al catálogo</a>
+<div class="row g-4 mt-1">
+  <div class="col-lg-7">
+    <div class="card overflow-hidden">
+      <div class="product-thumb" style="height:220px;font-size:5rem;border-radius:0;background:linear-gradient(135deg, <%= product.color || '#94a3b8' %>, <%= product.color || '#94a3b8' %>aa)">
+        <i class="bi <%= product.icon || 'bi-box-seam' %>"></i>
+      </div>
+      <div class="card-body p-4">
+        <small class="text-secondary"><%= product.category || 'Sin categoría' %> · SKU <%= product.sku %></small>
+        <h2 class="fw-bold"><%= product.name %></h2>
+        <p class="text-secondary"><%= product.description || 'Sin descripción.' %></p>
+        <div class="price fs-3"><%= money(product.price) %></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card p-4">
+      <h5 class="fw-bold mb-3">Disponibilidad</h5>
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="display-5 fw-bold"><%= product.stock %></div>
+        <div class="text-secondary">unidades<br>en stock</div>
+      </div>
+      <% if (product.stock === 0) { %>
+        <div class="alert alert-danger mb-0">Este producto está agotado.</div>
+      <% } else { %>
+        <form method="post" action="/catalog/<%= product.id %>/request">
+          <div class="mb-3"><label class="form-label">Cantidad a retirar</label>
+            <input type="number" name="quantity" class="form-control" min="1" max="<%= product.stock %>" value="1" required></div>
+          <div class="mb-3"><label class="form-label">Motivo (opcional)</label>
+            <input name="note" class="form-control" maxlength="120" placeholder="Ej: proyecto de robótica"></div>
+          <button class="btn btn-brand w-100"><i class="bi bi-bag-check"></i> Retirar producto</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>
